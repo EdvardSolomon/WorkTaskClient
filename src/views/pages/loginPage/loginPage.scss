@@ -1,0 +1,15 @@
+.loginPage {
+  background-color: #e2e2e5;;
+	border-radius: 15px;
+	height: 350px;
+  width: 350px;
+  padding: 20px;
+
+  &__title{
+    border-bottom: solid;
+  }
+
+  &__googleButton {
+    align-items: center;
+  }
+}
