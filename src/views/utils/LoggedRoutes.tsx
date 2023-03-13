@@ -1,10 +1,6 @@
 import { Outlet, Navigate } from "react-router-dom";
-import { useUserStore } from "../../data/stores/useUserStore";
-
 const LoggedRoutes = () => {
-  const loggedIn = useUserStore((state: any) => state.loggedIn);
-
-  return loggedIn === false ? <Outlet /> : <Navigate to="/" />;
+  return !localStorage.getItem("token") ? <Outlet /> : <Navigate to="/" />;
 };
 
 export default LoggedRoutes;

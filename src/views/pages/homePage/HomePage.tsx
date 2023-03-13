@@ -15,18 +15,17 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const HomePage = () => {
+  
   const [
     userData,
-    loggedIn,
-    logout,
-    userFolders,
+    isAuth,
     userFiles,
+    userFolders,
   ]: any = useUserStore((state) => [
     state.userData,
-    state.loggedIn,
-    state.logout,
-    state.userFolders,
+    state.isAuth,
     state.userFiles,
+    state.userFolders,
   ]);
 
   const [rootFolder] = userFolders.filter(
@@ -45,8 +44,7 @@ const HomePage = () => {
     <Container fluid className="px-0" style={{ overflowX: "hidden" }}>
       <NavDashboard
         name={userData?.firstName + " " + userData?.lastName}
-        isLoggedIn={loggedIn}
-        logout={logout}
+        isLoggedIn={isAuth}
       />
       <SubNav currentFolder={rootFolder} />
       {rootFolderChilds && rootFolderChilds.length > 0 && (

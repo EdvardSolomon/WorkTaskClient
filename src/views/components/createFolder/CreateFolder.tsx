@@ -1,6 +1,5 @@
 import { faFolderPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import axios from "axios";
 import { useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { toast } from "react-toastify";
@@ -13,31 +12,12 @@ const CreateFolder = ({ currentFolder }) => {
   const [
     userId,
     userFolders,
-    tokens,
     addFolder,
   ]: any = useUserStore((state) => [
     state.userData.id,
     state.userFolders,
-    state.tokens,
     state.addFolder,
   ]);
-  const createFolder = async (folderName, userId, parentId) => {
-    const response = await axios.post(
-      "http://localhost:3000/folders",
-      {
-        userId: userId,
-        folderName: folderName,
-        view: "public",
-        parentId: parentId,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${tokens.access_token}`,
-        },
-      }
-    );
-    addFolder(response.data);
-  };
 
   const handleFolderSubmit = (e) => {
     e.preventDefault();
@@ -46,12 +26,11 @@ const CreateFolder = ({ currentFolder }) => {
         folder.parentId === currentFolder.id &&
         folder.folderName === folderName.trim()
     );
-    console.log(filteredFolders);
     if (!folderName) return toast.warn("Name can't be empty");
 
     if (filteredFolders.length > 0)
       return toast.dark("This is alredy present in folder");
-    createFolder(folderName, userId, currentFolder.id);
+    addFolder(folderName, userId, currentFolder.id);
     setFolderName("");
     setShowModal(false);
     return;

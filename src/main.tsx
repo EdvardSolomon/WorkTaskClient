@@ -13,12 +13,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <GoogleOAuthProvider clientId="897327783667-0bjjbancgdq8f6t06elcb2f39gn224v5.apps.googleusercontent.com">
       <BrowserRouter>
         <Routes>
-          <Route element={<LoggedRoutes />}>
-            <Route element={<LoginPage />} path="/login" />
-          </Route>
-          <Route element={<PrivateRoutes />}>
             <Route element={<App />} path="/" />
-          </Route>
         </Routes>
       </BrowserRouter>
     </GoogleOAuthProvider>

@@ -1,71 +1,14 @@
 import { GoogleLogin } from "@react-oauth/google";
-import axios from "axios";
 import { useUserStore } from "../../../data/stores/useUserStore";
 
 import "./loginPage.scss";
 
 const LoginPage = () => {
-  const [
-    tokens,
-    setAccesToken,
-    setRefreshToken,
-    setUserData,
-    toogleLoggedIn,
-    setUserFiles,
-    setUserFolders,
-  ]: any = useUserStore((state) => [
-    state.tokens,
-    state.setAccesToken,
-    state.setRefreshToken,
-    state.setUserData,
-    state.toogleLoggedIn,
-    state.setUserFiles,
-    state.setUserFolders,
-  ]);
+  const [ login, isAuth] : any = useUserStore((state) => [state.login, state.isAuth]);
 
-  const signIn = async (credentialResponse: any) => {
-    const response = await axios.post(
-      "http://localhost:3000/auth/google/login",
-      {
-        token: credentialResponse.credential,
-      }
-    );
-    const data = response.data;
-    setAccesToken(data.access_token);
-    setRefreshToken(data.refresh_token);
-    console.log(tokens);
-
-    const userResponse = await axios.get("http://localhost:3000/users/me", {
-      headers: {
-        Authorization: `Bearer ${tokens.access_token}`,
-      },
-    });
-    const userData = userResponse.data;
-    setUserData(userData);
-
-    const foldersResponse = await axios.get(
-      `http://localhost:3000/folders/user/${userData.id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${tokens.access_token}`,
-        },
-      }
-    );
-    const userFolders = foldersResponse.data;
-    setUserFolders(userFolders);
-
-    const filesResponse = await axios.get(
-      `http://localhost:3000/file/user/${userData.id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${tokens.access_token}`,
-        },
-      }
-    );
-    const userFiles = filesResponse.data;
-    setUserFiles(userFiles);
-
-    toogleLoggedIn();
+  const signIn = (credentialResponse: any) => {
+    localStorage.setItem('token', credentialResponse.credential);
+    login();
   };
 
   return (

@@ -29,8 +29,6 @@ const SubNav = ({ currentFolder }) => {
           <div className="ml-auto col-md-5 d-flex justify-content-end">
             <UploadFile currentFolder={currentFolder} />
             &nbsp;
-            <CreateFile currentFolder={currentFolder} />
-            &nbsp;
             <CreateFolder currentFolder={currentFolder} />
           </div>
         </>

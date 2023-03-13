@@ -8,7 +8,6 @@ const NavDashboard = (props: {
 }) => {
   const Navlogout = () => {
     // props.logout();
-    //  redirect("/login");
     alert("Logout");
   };
 
