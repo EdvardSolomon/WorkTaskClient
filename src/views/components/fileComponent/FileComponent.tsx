@@ -1,5 +1,5 @@
 const FileComponent = () => {
-  return <></>;
+  return <>File Component</>;
 };
 
 export default FileComponent;

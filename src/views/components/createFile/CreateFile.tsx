@@ -9,9 +9,10 @@ const CreateFile = ({ currentFolder }) => {
   const [showModal, setShowModal] = useState(false);
   const [file, setFile] = useState("");
 
-  const [userId, userFiles]: any = useUserStore((state) => [
+  const [userId, userFiles, addFile]: any = useUserStore((state) => [
     state.userData.id,
     state.userFiles,
+    state.addFile,
   ]);
 
   const handleFileSubmit = (e) => {

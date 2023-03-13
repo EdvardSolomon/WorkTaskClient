@@ -8,22 +8,14 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Container, Row, Col } from "react-bootstrap";
 import { useUserStore } from "../../../data/stores/useUserStore";
-import NavDashboard from "../../components/navbar/Navbar";
 import SubNav from "../../components/subNav/SubNav";
-import { redirect } from "react-router-dom";
+import { redirect, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const HomePage = () => {
-  
-  const [
-    userData,
-    isAuth,
-    userFiles,
-    userFolders,
-  ]: any = useUserStore((state) => [
-    state.userData,
-    state.isAuth,
+  const history = useNavigate();
+  const [userFiles, userFolders]: any = useUserStore((state) => [
     state.userFiles,
     state.userFolders,
   ]);
@@ -42,10 +34,6 @@ const HomePage = () => {
 
   return (
     <Container fluid className="px-0" style={{ overflowX: "hidden" }}>
-      <NavDashboard
-        name={userData?.firstName + " " + userData?.lastName}
-        isLoggedIn={isAuth}
-      />
       <SubNav currentFolder={rootFolder} />
       {rootFolderChilds && rootFolderChilds.length > 0 && (
         <>
@@ -54,7 +42,7 @@ const HomePage = () => {
             {rootFolderChilds.map(
               ({ folderName, id }: { folderName: string; id: string }) => (
                 <Col
-                  onDoubleClick={() => redirect(`/dashboard/folder/${id}`)}
+                  onDoubleClick={() => history(`/folder/${id}`)}
                   onClick={(e) => {
                     if (e.currentTarget.classList.contains("text-white")) {
                       e.currentTarget.style.background = "#fff";

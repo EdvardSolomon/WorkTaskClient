@@ -9,11 +9,7 @@ const CreateFolder = ({ currentFolder }) => {
   const [showModal, setShowModal] = useState(false);
   const [folderName, setFolderName] = useState("");
 
-  const [
-    userId,
-    userFolders,
-    addFolder,
-  ]: any = useUserStore((state) => [
+  const [userId, userFolders, addFolder]: any = useUserStore((state) => [
     state.userData.id,
     state.userFolders,
     state.addFolder,
@@ -21,13 +17,14 @@ const CreateFolder = ({ currentFolder }) => {
 
   const handleFolderSubmit = (e) => {
     e.preventDefault();
+    console.log(userFolders);
     const filteredFolders = userFolders.filter(
       (folder) =>
         folder.parentId === currentFolder.id &&
         folder.folderName === folderName.trim()
     );
     if (!folderName) return toast.warn("Name can't be empty");
-
+    console.log(filteredFolders);
     if (filteredFolders.length > 0)
       return toast.dark("This is alredy present in folder");
     addFolder(folderName, userId, currentFolder.id);

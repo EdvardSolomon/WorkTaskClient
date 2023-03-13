@@ -11,9 +11,9 @@ const UploadFile = ({ currentFolder }) => {
   const [fileName, setFileName] = useState("");
   const [progress, setProgress] = useState(0);
 
-  const [userId, userFiles]: any = useUserStore((state) => [
-    state.userData.id,
+  const [userFiles, addFile]: any = useUserStore((state) => [
     state.userFiles,
+    state.addFile,
   ]);
 
   const handleFileSubmit = (e) => {
@@ -53,67 +53,17 @@ const UploadFile = ({ currentFolder }) => {
     }
     const filteredFiles = userFiles.filter(
       (file) =>
-        file.data.parent === currentFolder.id &&
-        file.data.name === fileName.split("\\").reverse()[0]
+        file.folderId === currentFolder.id &&
+        file.originalName === fileName.split("\\").reverse()[0]
     );
     if (filteredFiles.length > 0)
       return toast.dark("This is alredy present in folder");
-
-    const uploadFileRef = storage.ref(`files/${userId}/${file.name}`);
-
-    uploadFileRef.put(file).on(
-      "state_change",
-      (snapshot) => {
-        const newProgress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        setProgress(newProgress);
-      },
-      (error) => {
-        return toast.error(error.message);
-      },
-      async () => {
-        const url = await uploadFileRef.getDownloadURL();
-        if (currentFolder === "Root") {
-          // dispatch(
-          //   addFileUser({
-          //     uid: userId,
-          //     parent: "",
-          //     data: "",
-          //     name: file.name,
-          //     url: url,
-          //     path: [],
-          //   })
-          // );
-          setFile("");
-          setProgress(0);
-          setShowModal(false);
-          return;
-        }
-
-        const path =
-          currentFolder.data.path.length > 0
-            ? [
-                ...currentFolder.data.path,
-                { id: currentFolder.id, name: currentFolder.folderName },
-              ]
-            : [{ id: currentFolder.id, name: currentFolder.folderName }];
-
-        // dispatch(
-        //   addFileUser({
-        //     uid: userId,
-        //     parent: currentFolder.docId,
-        //     data: "",
-        //     name: file.name,
-        //     url: url,
-        //     path: path,
-        //   })
-        // );
-        setFile("");
-        setProgress(0);
-        setShowModal(false);
-        return;
-      }
-    );
+    console.log(file);
+    addFile(currentFolder.id, file);
+    setFile("");
+    setProgress(0);
+    setShowModal(false);
+    return;
   };
 
   return (

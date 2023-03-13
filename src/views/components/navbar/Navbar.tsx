@@ -1,15 +1,10 @@
 import { Button, Nav, Navbar } from "react-bootstrap";
-import { Link, redirect } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useUserStore } from "../../../data/stores/useUserStore";
 
-const NavDashboard = (props: {
-  name: string;
-  isLoggedIn: boolean;
-  logout: Function;
-}) => {
-  const Navlogout = () => {
-    // props.logout();
-    alert("Logout");
-  };
+const NavDashboard = (props: { name: string; isLoggedIn: boolean }) => {
+  const history = useNavigate();
+  const logout = useUserStore((state) => state.logout);
 
   return (
     <Navbar
@@ -44,22 +39,14 @@ const NavDashboard = (props: {
             </Nav.Link>
             <Nav.Link
               as={Button}
-              variant="success"
-              active
-              style={{ marginRight: "5px" }}
-              size="sm"
-              className="text-white"
-            >
-              Home
-            </Nav.Link>
-            <Nav.Link
-              as={Button}
               variant="primary"
               active
               style={{ marginRight: "5px" }}
               size="sm"
               className="text-white"
-              onClick={Navlogout}
+              onClick={() => {
+                logout();
+              }}
             >
               Logout
             </Nav.Link>

@@ -1,10 +1,8 @@
 import { Col } from "react-bootstrap";
-import CreateFile from "../createFile/CreateFile";
 import CreateFolder from "../createFolder/CreateFolder";
 import UploadFile from "../uploadFile/UploadFile";
-import BreadCrum from "../BreadCrum.js/BreadCrum";
 
-const SubNav = ({ currentFolder }) => {
+const SubNav = (currentFolder) => {
   return (
     <Col
       md={12}
@@ -12,16 +10,7 @@ const SubNav = ({ currentFolder }) => {
     >
       {currentFolder && currentFolder.folderName !== "Root" ? (
         <>
-          <BreadCrum currentFolder={currentFolder} />
-          {currentFolder.data.createdBy !== "admin" && (
-            <div className="ml-auto col-md-5 d-flex justify-content-end">
-              <UploadFile currentFolder={currentFolder} />
-              &nbsp;
-              <CreateFile currentFolder={currentFolder} />
-              &nbsp;
-              <CreateFolder currentFolder={currentFolder} />
-            </div>
-          )}
+          <p>NOT Root</p>
         </>
       ) : (
         <>

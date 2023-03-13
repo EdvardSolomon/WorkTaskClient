@@ -1,13 +1,26 @@
 import { GoogleLogin } from "@react-oauth/google";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useUserStore } from "../../../data/stores/useUserStore";
 
 import "./loginPage.scss";
 
 const LoginPage = () => {
-  const [ login, isAuth] : any = useUserStore((state) => [state.login, state.isAuth]);
+  const history = useNavigate();
+  const [login, checkAuth]: any = useUserStore((state) => [
+    state.login,
+    state.isAuth,
+    state.checkAuth,
+  ]);
+
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      history("/");
+    }
+  }, []);
 
   const signIn = (credentialResponse: any) => {
-    localStorage.setItem('token', credentialResponse.credential);
+    localStorage.setItem("token", credentialResponse.credential);
     login();
   };
 

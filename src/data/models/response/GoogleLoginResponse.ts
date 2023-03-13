@@ -1,4 +1,4 @@
 export interface GoogleLoginResponse {
-    acces_token : string,
-    refresh_token : string,
+  acces_token: string;
+  refresh_token: string;
 }
