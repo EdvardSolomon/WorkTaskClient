@@ -31,6 +31,7 @@ $api.interceptors.response.use(
         return $api.request(originalRequest);
       } catch (e) {
         console.log("not authorized");
+        localStorage.removeItem("token");
       }
     }
     throw error;

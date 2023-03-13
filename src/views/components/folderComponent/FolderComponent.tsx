@@ -1,20 +1,15 @@
-import {
-  faFile,
-  faFileAlt,
-  faFileAudio,
-  faFileImage,
-  faFileVideo,
-  faFolder,
-} from "@fortawesome/free-solid-svg-icons";
+import { faFileAlt, faFolder } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect } from "react";
 import { Col, Row } from "react-bootstrap";
-import { redirect, useParams } from "react-router";
+import { redirect, useNavigate, useParams } from "react-router";
 import { useUserStore } from "../../../data/stores/useUserStore.js";
 import SubNav from "../subNav/SubNav";
 
 const FolderComponent = () => {
   const { folderId } = useParams();
+
+  const history = useNavigate();
 
   const [userId, folders, files]: any = useUserStore((state) => [
     state.userData.id,
@@ -29,16 +24,25 @@ const FolderComponent = () => {
   //   }
   // }, [folders, isLoading]);
   const userFolders =
-    folders && folders.filter((file) => file.parentId === folderId);
+    folders && folders.filter((file) => file.parentId == folderId);
 
-  const currentFolder =
-    folders && folders.find((folder) => folder.id === folderId);
+  const currentFolder = folders.find((folder) => folder.id == folderId);
 
   const createdFiles =
-    files && files.filter((file) => file.folderId === folderId);
+    files && files.filter((file) => file.folderId == folderId);
 
   const uploadedFiles =
-    files && files.filter((file) => file.folderId === folderId);
+    files && files.filter((file) => file.folderId == folderId);
+
+  console.log(userFolders);
+
+  console.log(folders);
+
+  console.log(currentFolder);
+
+  console.log(createdFiles);
+
+  console.log(uploadedFiles);
 
   // if (isLoading) {
   //   return (
@@ -85,7 +89,7 @@ const FolderComponent = () => {
             ) : (
               userFolders.map(({ folderName, id }) => (
                 <Col
-                  onDoubleClick={() => redirect(`/dashboard/folder/${id}`)}
+                  onDoubleClick={() => history(`/folder/${id}`)}
                   onClick={(e) => {
                     if (e.currentTarget.classList.contains("text-white")) {
                       e.currentTarget.style.background = "#fff";

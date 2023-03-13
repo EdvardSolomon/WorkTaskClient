@@ -43,14 +43,9 @@ function App() {
         isLoggedIn={isAuth}
       />
       <Routes>
-        <Route element={<LoggedRoutes />}>
-          <Route path={`${url}`} element={<HomePage />} />
-          <Route
-            path={`${url}/folder/:folderId`}
-            element={<FolderComponent />}
-          />
-          <Route path={`${url}/file/:fileId`} element={<FileComponent />} />
-        </Route>
+        <Route path={`${url}`} element={<HomePage />} />
+        <Route path={`${url}/folder/:folderId`} element={<FolderComponent />} />
+        <Route path={`${url}/file/:fileId`} element={<FileComponent />} />
       </Routes>
     </Container>
   );

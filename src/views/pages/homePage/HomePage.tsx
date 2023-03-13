@@ -4,6 +4,8 @@ import {
   faFileImage,
   faFileVideo,
   faFolder,
+  faPenToSquare,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Container, Row, Col } from "react-bootstrap";
@@ -19,6 +21,11 @@ const HomePage = () => {
     state.userFiles,
     state.userFolders,
   ]);
+
+  const deleteFunk = (e) => {
+    e.stopPropagation();
+    alert("DELETE");
+  };
 
   const [rootFolder] = userFolders.filter(
     (folder: any) => folder.folderName == "Root"
@@ -56,14 +63,27 @@ const HomePage = () => {
                   }}
                   key={id}
                   md={2}
-                  className="border h-100 d-flex align-items-center justify-content-around flex-column py-1 rounded-2"
+                  className="border h-100 d-flex align-items-center justify-content-around flex-column py-1 rounded-2 position-relative"
                 >
                   <FontAwesomeIcon
+                    role="button"
+                    icon={faPenToSquare}
+                    className="position-absolute bottom-100 end-0"
+                    style={{ fontSize: "15px" }}
+                  />
+                  <FontAwesomeIcon
+                    role="button"
+                    onClick={(e) => deleteFunk(e)}
+                    icon={faTrash}
+                    className="position-absolute bottom-100 start-0"
+                    style={{ fontSize: "15px" }}
+                  />
+                  <FontAwesomeIcon
                     icon={faFolder}
-                    className="mt-3"
+                    className="mt-2"
                     style={{ fontSize: "3rem" }}
                   />
-                  <p className="text-center mt-3">{folderName}</p>
+                  <p className="text-center mt-3 cursor-point">{folderName}</p>
                 </Col>
               )
             )}
