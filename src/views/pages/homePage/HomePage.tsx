@@ -4,45 +4,68 @@ import {
   faFileImage,
   faFileVideo,
   faFolder,
-  faPenToSquare,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Container, Row, Col } from "react-bootstrap";
 import { useUserStore } from "../../../data/stores/useUserStore";
-import SubNav from "../../components/subNav/SubNav";
-import { redirect, useNavigate } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+import SubNav from "../../components/navigation/subNav/SubNav";
+import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
-
+import { FolderData } from "../../../data/models/state/FolderData";
+import { FileData } from "../../../data/models/state/FileData";
+import EditFolder from "../../components/modals/editFolder/EditFolder";
+import FileModal from "../../components/modals/fileModal/FileModal";
 const HomePage = () => {
   const history = useNavigate();
-  const [userFiles, userFolders]: any = useUserStore((state) => [
-    state.userFiles,
-    state.userFolders,
-  ]);
+  const [isLoading, userFiles, userFolders, deleteFolder] = useUserStore(
+    (state: any) => [
+      state.isLoading,
+      state.userFiles,
+      state.userFolders,
+      state.deleteFolder,
+    ]
+  );
 
-  const deleteFunk = (e) => {
+  if (isLoading) {
+    return (
+      <>
+        <Row>
+          <Col md="12">
+            <p className="text-center small text-center my-5">LOADING...</p>
+          </Col>
+        </Row>
+      </>
+    );
+  }
+
+  const deleteFunk = async (
+    e: React.MouseEvent<SVGSVGElement, MouseEvent>,
+    folderId: number
+  ) => {
     e.stopPropagation();
-    alert("DELETE");
+    const result = confirm("Хотите удалить папку?");
+    if (result) {
+      await deleteFolder(folderId);
+    }
   };
 
   const [rootFolder] = userFolders.filter(
-    (folder: any) => folder.folderName == "Root"
+    (folder: FolderData) => folder.folderName == "Root"
   );
 
   const rootFolderChilds = userFolders.filter(
-    (folder: any) => folder.parentId == rootFolder.id
+    (folder: FolderData) => folder.parentId == rootFolder?.id
   );
 
   const rootFolderFiles = userFiles.filter(
-    (file: any) => file.folderId == rootFolder.id
+    (file: FileData) => file.folderId == rootFolder?.id
   );
 
   return (
     <Container fluid className="px-0" style={{ overflowX: "hidden" }}>
       <SubNav currentFolder={rootFolder} />
-      {rootFolderChilds && rootFolderChilds.length > 0 && (
+      {rootFolderChilds && rootFolderChilds.length > 0 ? (
         <>
           <p className="text-center border-bottom py-2">Folders</p>
           <Row style={{ height: "auto" }} className="pt-2 gap-2 pb-4 px-5">
@@ -67,16 +90,14 @@ const HomePage = () => {
                 >
                   <FontAwesomeIcon
                     role="button"
-                    icon={faPenToSquare}
-                    className="position-absolute bottom-100 end-0"
-                    style={{ fontSize: "15px" }}
-                  />
-                  <FontAwesomeIcon
-                    role="button"
-                    onClick={(e) => deleteFunk(e)}
+                    onClick={(e) => deleteFunk(e, id)}
                     icon={faTrash}
                     className="position-absolute bottom-100 start-0"
                     style={{ fontSize: "15px" }}
+                  />
+                  <EditFolder
+                    currentFolderId={id}
+                    parentFolderId={rootFolder.id}
                   />
                   <FontAwesomeIcon
                     icon={faFolder}
@@ -89,8 +110,16 @@ const HomePage = () => {
             )}
           </Row>
         </>
+      ) : (
+        <>
+          <Row>
+            <Col md="12">
+              <p className="text-center small text-center my-5">Empty Folder</p>
+            </Col>
+          </Row>
+        </>
       )}
-      {rootFolderFiles && rootFolderFiles.length > 0 && (
+      {rootFolderFiles && rootFolderFiles.length > 0 ? (
         <>
           <p className="text-center border-bottom py-2">Files</p>
           <Row
@@ -100,7 +129,7 @@ const HomePage = () => {
           >
             {rootFolderFiles.map(({ originalName, id }) => (
               <Col
-                onDoubleClick={() => redirect(`/dashboard/file/${id}`)}
+                onDoubleClick={() => history(`/dashboard/file/${id}`)}
                 onClick={(e) => {
                   if (e.currentTarget.classList.contains("text-white")) {
                     e.currentTarget.style.background = "#fff";
@@ -114,8 +143,13 @@ const HomePage = () => {
                 }}
                 key={id}
                 md={2}
-                className="border h-100 mr-2 d-flex align-items-center justify-content-around flex-column py-1 rounded-2"
+                className="border h-100 mr-2 d-flex align-items-center justify-content-around flex-column py-1 rounded-2 d-flex"
               >
+                <FileModal
+                  fileId={id}
+                  currentFolderId={rootFolder.id}
+                  fileName={originalName}
+                />
                 <FontAwesomeIcon
                   icon={
                     originalName
@@ -157,8 +191,9 @@ const HomePage = () => {
             ))}
           </Row>
         </>
+      ) : (
+        <>FETCHING FILES</>
       )}
-      <ToastContainer />
     </Container>
   );
 };

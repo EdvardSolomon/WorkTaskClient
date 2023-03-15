@@ -1,10 +1,15 @@
 import { Button, Nav, Navbar } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import { useUserStore } from "../../../data/stores/useUserStore";
+import { useUserStore } from "../../../../data/stores/useUserStore";
 
 const NavDashboard = (props: { name: string; isLoggedIn: boolean }) => {
   const history = useNavigate();
   const logout = useUserStore((state) => state.logout);
+
+  const logoutFunk = async () => {
+    await logout();
+    history("/login");
+  };
 
   return (
     <Navbar
@@ -45,7 +50,7 @@ const NavDashboard = (props: { name: string; isLoggedIn: boolean }) => {
               size="sm"
               className="text-white"
               onClick={() => {
-                logout();
+                logoutFunk();
               }}
             >
               Logout

@@ -15,4 +15,20 @@ export default class FileService {
       },
     });
   }
+  static deleteFile(fileId: number) {
+    return $api.delete(`/file/${fileId}`);
+  }
+
+  static updateFile(originalName: string, view: string, fileId: number) {
+    return $api.patch(`/file/${fileId}`, {
+      originalName: originalName,
+      view: view,
+    });
+  }
+
+  static async getFile(fileId: number) {
+    return $api.get(`/file/${fileId}`, {
+      responseType: "blob",
+    });
+  }
 }

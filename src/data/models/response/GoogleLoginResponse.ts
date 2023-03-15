@@ -1,4 +1,6 @@
+import { UserData } from "../state/UserData";
+
 export interface GoogleLoginResponse {
-  acces_token: string;
-  refresh_token: string;
+  token: string;
+  user: UserData;
 }

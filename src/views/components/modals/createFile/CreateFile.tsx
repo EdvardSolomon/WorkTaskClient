@@ -3,7 +3,7 @@ import { faFileAlt, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Button, Form, Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toast } from "react-toastify";
-import { useUserStore } from "../../../data/stores/useUserStore";
+import { useUserStore } from "../../../../data/stores/useUserStore";
 
 const CreateFile = ({ currentFolder }) => {
   const [showModal, setShowModal] = useState(false);

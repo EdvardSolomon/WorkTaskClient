@@ -1,58 +1,58 @@
-import { faFileAlt, faFolder } from "@fortawesome/free-solid-svg-icons";
+import {
+  faFileAlt,
+  faFolder,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect } from "react";
 import { Col, Row } from "react-bootstrap";
 import { redirect, useNavigate, useParams } from "react-router";
+import { FileData } from "../../../data/models/state/FileData.js";
+import { FolderData } from "../../../data/models/state/FolderData.js";
 import { useUserStore } from "../../../data/stores/useUserStore.js";
-import SubNav from "../subNav/SubNav";
+import EditFolder from "../../components/modals/editFolder/EditFolder.js";
+import FileModal from "../../components/modals/fileModal/FileModal.js";
+import SubNav from "../../components/navigation/subNav/SubNav";
 
 const FolderComponent = () => {
+  const deleteFolder = useUserStore((state) => state.deleteFolder);
+
   const { folderId } = useParams();
+
+  const folderIdToNumber = Number(folderId);
+
+  const deleteFunk = async (
+    e: React.MouseEvent<SVGSVGElement, MouseEvent>,
+    folderId: number
+  ) => {
+    e.stopPropagation();
+    const result = confirm("Хотите удалить папку?");
+    if (result) {
+      await deleteFolder(folderId);
+    }
+  };
 
   const history = useNavigate();
 
-  const [userId, folders, files]: any = useUserStore((state) => [
-    state.userData.id,
+  const [folders, files]: any = useUserStore((state) => [
     state.userFolders,
     state.userFiles,
   ]);
 
-  // useEffect(() => {
-  //   if (!folders && !files) {
-  //     //  dispatch(getUserFolders(userId));
-  //     //  dispatch(getUserFiles(userId));
-  //   }
-  // }, [folders, isLoading]);
   const userFolders =
-    folders && folders.filter((file) => file.parentId == folderId);
+    folders &&
+    folders.filter((folder: FolderData) => folder.parentId == folderIdToNumber);
 
-  const currentFolder = folders.find((folder) => folder.id == folderId);
+  const currentFolder = folders.find(
+    (folder: FolderData) => folder.id == folderIdToNumber
+  );
 
   const createdFiles =
-    files && files.filter((file) => file.folderId == folderId);
+    files &&
+    files.filter((file: FileData) => file.folderId == folderIdToNumber);
 
   const uploadedFiles =
-    files && files.filter((file) => file.folderId == folderId);
-
-  console.log(userFolders);
-
-  console.log(folders);
-
-  console.log(currentFolder);
-
-  console.log(createdFiles);
-
-  console.log(uploadedFiles);
-
-  // if (isLoading) {
-  //   return (
-  //     <Row>
-  //       <Col md="12">
-  //         <h1 className="text-center my-5">Fetching data...</h1>
-  //       </Col>
-  //     </Row>
-  //   );
-  // }
+    files &&
+    files.filter((file: FileData) => file.folderId == folderIdToNumber);
 
   if (
     userFolders &&
@@ -103,8 +103,19 @@ const FolderComponent = () => {
                   }}
                   key={id}
                   md={2}
-                  className="border h-100 mr-2 d-flex align-items-center justify-content-around flex-column py-1 rounded-2"
+                  className="border h-100 mr-2 d-flex align-items-center justify-content-around flex-column py-1 rounded-2 position-relative"
                 >
+                  <FontAwesomeIcon
+                    role="button"
+                    onClick={(e) => deleteFunk(e, id)}
+                    icon={faTrash}
+                    className="position-absolute bottom-100 start-0"
+                    style={{ fontSize: "15px" }}
+                  />
+                  <EditFolder
+                    currentFolderId={id}
+                    parentFolderId={currentFolder.id}
+                  />
                   <FontAwesomeIcon
                     icon={faFolder}
                     className="mt-3"
@@ -143,6 +154,7 @@ const FolderComponent = () => {
                 md={2}
                 className="border h-100 mr-2 d-flex align-items-center justify-content-around flex-column py-1 rounded-2"
               >
+                <FileModal fileId={id} currentFolderId={currentFolder.id} />
                 <FontAwesomeIcon
                   icon={faFileAlt}
                   className="mt-3"

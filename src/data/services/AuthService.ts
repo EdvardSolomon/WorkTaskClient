@@ -10,7 +10,6 @@ export default class AuthService {
   }
 
   static async logout() {
-    console.log("TESTING");
     return $api.post("auth/logout");
   }
 }

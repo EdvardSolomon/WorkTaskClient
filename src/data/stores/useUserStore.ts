@@ -1,114 +1,183 @@
 import axios from "axios";
 import { create } from "zustand";
+import { devtools } from "zustand/middleware";
 import { API_URL } from "../http";
+import { UserState } from "../models/state/UserState";
 import AuthService from "../services/AuthService";
 import FileService from "../services/FileService";
 import FolderService from "../services/FolderService";
 
-export const useUserStore = create((set, get) => ({
-  userData: {
-    createdAt: "",
-    email: "",
-    firstName: "",
-    id: 0,
-    lastName: "",
-    role: "",
-    updatedAt: "",
-  },
-  isAuth: false,
-  isLoading: false,
-  userFiles: [],
-  userFolders: [],
+export const useUserStore = create<UserState>()(
+  devtools((set, get) => ({
+    userData: null,
+    isAuth: false,
+    isLoading: false,
+    userFiles: [],
+    userFolders: [],
 
-  // add types
-  setUserData: (userData: any) => {
-    set({ userData: userData });
-  },
+    // User methods
+    setUserData: (userData) => {
+      set({ userData: userData });
+    },
 
-  setLoading: (bool: boolean) => {
-    set({ isLoading: bool });
-  },
+    // Loading/Auth sets
+    setLoading: (bool) => {
+      set({ isLoading: bool });
+    },
 
-  fetchFolders: async () => {
-    const { userData } = get();
-    const response = await FolderService.getFoldersByUser(userData.id);
-    set({ userFolders: response.data });
-  },
+    setAuth: (bool: boolean) => set({ isAuth: bool }),
 
-  addFolder: async (folderName: string, userId: number, parentId: number) => {
-    const newFolder = await FolderService.createFolder(
-      folderName,
-      userId,
-      parentId
-    );
-    const { userFolders } = get();
-    set({ userFolders: [...userFolders, newFolder.data] });
-  },
-
-  fetchFiles: (userFiles: any) => {
-    set({ userFiles: userFiles });
-  },
-
-  addFile: async (folderId: number, file: any) => {
-    const newFile = await FileService.createFile(folderId, file);
-    const { userFiles } = get();
-    set({ userFiles: [...userFiles, newFile.data] });
-  },
-
-  setAuth: (bool: boolean) => set({ isAuth: bool }),
-
-  login: async () => {
-    try {
-      const googleResponse = await AuthService.googleLogin();
-      localStorage.setItem("token", googleResponse.data.token);
-      set({ userData: googleResponse.data.user });
-
-      const response = await FolderService.getFoldersByUser(
-        googleResponse.data.user.id
+    // Folder methods
+    addFolder: async (
+      folderName: string,
+      userId: number,
+      parentId: number,
+      path: string
+    ) => {
+      const newFolder = await FolderService.createFolder(
+        folderName,
+        userId,
+        parentId,
+        path
       );
-      set({ userFolders: response.data });
+      const { userFolders } = get();
+      set({ userFolders: [...userFolders, newFolder.data] });
+    },
 
-      const fileResponse = await FileService.getFilesByUser(
-        googleResponse.data.user.id
+    // add cascade delete to children folders and files or just sinc
+    deleteFolder: async (folderId: number) => {
+      const response = await FolderService.deleteFolder(folderId);
+      if (response.status == 204) {
+        const { userFolders } = get();
+        const filteredFolders = userFolders.filter((folder) => {
+          return folder.id !== folderId;
+        });
+        set({ userFolders: filteredFolders });
+      } else {
+        console.log("Delete Failed");
+      }
+    },
+
+    updateFolder: async (
+      folderName: string,
+      view: string,
+      folderId: number
+    ) => {
+      const response = await FolderService.updateFolder(
+        folderName,
+        view,
+        folderId
       );
-      set({ userFiles: fileResponse.data });
-
-      set({ isLoading: false, isAuth: true });
-    } catch (e) {
-      console.log(e);
-    }
-  },
-
-  checkAuth: async () => {
-    try {
-      const response = await axios.get(`${API_URL}/auth/refresh`, {
-        withCredentials: true,
+      const { userFolders } = get();
+      const [updatedFolder] = userFolders.filter(
+        (folder) => folder.id == folderId
+      );
+      updatedFolder.folderName = folderName;
+      updatedFolder.view = view;
+      const filteredFolders = userFolders.filter((folder) => {
+        return folder.id !== folderId;
       });
-      console.log(response);
-      localStorage.setItem("token", response.data.token);
+      set({
+        userFolders: [...filteredFolders, updatedFolder],
+      });
+    },
 
-      set({ userData: response.data.user });
+    // File methods
+    addFile: async (folderId: number, file: any) => {
+      const newFile = await FileService.createFile(folderId, file);
+      const { userFiles } = get();
+      set({ userFiles: [...userFiles, newFile.data] });
+    },
 
-      const folderResponse = await FolderService.getFoldersByUser(
-        response.data.user.id
-      );
-      set({ userFolders: folderResponse.data });
+    deleteFile: async (fileId: number) => {
+      const response = await FileService.deleteFile(fileId);
+      if (response.status == 200) {
+        const { userFiles } = get();
+        const filteredFiles = userFiles.filter((folder) => {
+          return folder.id !== fileId;
+        });
+        set({ userFiles: filteredFiles });
+      } else {
+        console.log("Delete Failed");
+      }
+    },
 
-      const fileResponse = await FileService.getFilesByUser(
-        response.data.user.id
-      );
-      set({ userFiles: fileResponse.data });
+    updateFile: async (originalName: string, view: string, fileId: number) => {
+      const response = await FileService.updateFile(originalName, view, fileId);
+      const { userFiles } = get();
+      const [updatedFile] = userFiles.filter((folder) => folder.id == fileId);
+      updatedFile.originalName = originalName;
+      updatedFile.view = view;
+      const filteredFiles = userFiles.filter((folder) => {
+        return folder.id !== fileId;
+      });
+      set({
+        userFiles: [...filteredFiles, updatedFile],
+      });
+    },
 
-      set({ isLoading: false, isAuth: true });
-    } catch (e) {
-      console.log(e);
-    }
-  },
+    getFile: async (fileId: number) => {
+      const response = await FileService.getFile(fileId);
+      return response;
+    },
 
-  logout: async () => {
-    const response = await AuthService.logout();
-    console.log(response);
-    localStorage.removeItem("token");
-    set({ isAuth: false, userData: null });
-  },
-}));
+    // Auth methods
+    login: async () => {
+      try {
+        set({ isLoading: true });
+        const googleResponse = await AuthService.googleLogin();
+        localStorage.setItem("token", googleResponse.data.token);
+        set({ userData: googleResponse.data.user });
+
+        const response = await FolderService.getFoldersByUser(
+          googleResponse.data.user.id
+        );
+        set({ userFolders: response.data });
+
+        const fileResponse = await FileService.getFilesByUser(
+          googleResponse.data.user.id
+        );
+        set({ userFiles: fileResponse.data });
+
+        set({ isLoading: false, isAuth: true });
+      } catch (e) {
+        set({ isLoading: false, isAuth: false });
+        console.log(e);
+      }
+    },
+
+    checkAuth: async () => {
+      try {
+        set({ isLoading: true });
+        const response = await axios.get(`${API_URL}/auth/refresh`, {
+          withCredentials: true,
+        });
+        localStorage.setItem("token", response.data.token);
+
+        set({ userData: response.data.user });
+
+        const folderResponse = await FolderService.getFoldersByUser(
+          response.data.user.id
+        );
+        set({ userFolders: folderResponse.data });
+
+        const fileResponse = await FileService.getFilesByUser(
+          response.data.user.id
+        );
+        set({ userFiles: fileResponse.data });
+
+        set({ isLoading: false, isAuth: true });
+      } catch (e) {
+        set({ isLoading: false, isAuth: false });
+        console.log(e);
+        localStorage.removeItem("token");
+      }
+    },
+
+    logout: async () => {
+      await AuthService.logout();
+      localStorage.removeItem("token");
+      set({ isAuth: false, userData: null });
+    },
+  }))
+);

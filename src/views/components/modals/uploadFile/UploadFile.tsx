@@ -3,7 +3,7 @@ import { faFileUpload, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Button, Form, Modal, ProgressBar } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toast } from "react-toastify";
-import { useUserStore } from "../../../data/stores/useUserStore";
+import { useUserStore } from "../../../../data/stores/useUserStore";
 
 const UploadFile = ({ currentFolder }) => {
   const [showModal, setShowModal] = useState(false);
@@ -58,7 +58,6 @@ const UploadFile = ({ currentFolder }) => {
     );
     if (filteredFiles.length > 0)
       return toast.dark("This is alredy present in folder");
-    console.log(file);
     addFile(currentFolder.id, file);
     setFile("");
     setProgress(0);

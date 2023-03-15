@@ -3,14 +3,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { toast } from "react-toastify";
-import { useUserStore } from "../../../data/stores/useUserStore";
+import { useUserStore } from "../../../../data/stores/useUserStore";
 
 const CreateFolder = ({ currentFolder }) => {
   const [showModal, setShowModal] = useState(false);
   const [folderName, setFolderName] = useState("");
 
   const [userId, userFolders, addFolder]: any = useUserStore((state) => [
-    state.userData.id,
+    state.userData?.id,
     state.userFolders,
     state.addFolder,
   ]);
@@ -27,7 +27,13 @@ const CreateFolder = ({ currentFolder }) => {
     console.log(filteredFolders);
     if (filteredFolders.length > 0)
       return toast.dark("This is alredy present in folder");
-    addFolder(folderName, userId, currentFolder.id);
+
+    const path =
+      currentFolder.folderName == "Root"
+        ? `${currentFolder.id}`
+        : `${currentFolder.path}/${currentFolder.id}`;
+
+    addFolder(folderName, userId, currentFolder.id, path);
     setFolderName("");
     setShowModal(false);
     return;
