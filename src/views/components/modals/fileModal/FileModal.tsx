@@ -118,7 +118,7 @@ const FileModal = ({ currentFolderId, fileId, fileName }) => {
       <Button
         onClick={() => setShowModal(true)}
         variant="outline-dark"
-        className="border-1 d-flex rounded-2"
+        className="d-flex align-self-end display-relative position-absolute"
       >
         <FontAwesomeIcon icon={faEllipsisVertical} />
       </Button>

@@ -1,4 +1,5 @@
 import "bootstrap/dist/css/bootstrap.min.css";
+import "react-toastify/dist/ReactToastify.css";
 import HomePage from "./views/pages/homePage/HomePage";
 import { useEffect } from "react";
 import { useUserStore } from "./data/stores/useUserStore";
@@ -11,14 +12,11 @@ import { ToastContainer } from "react-toastify";
 function App() {
   const history = useNavigate();
   const url = useResolvedPath("").pathname;
-  const [isAuth, checkAuth, isLoading, userData] = useUserStore(
-    (state: any) => [
-      state.isAuth,
-      state.checkAuth,
-      state.isLoading,
-      state.userData,
-    ]
-  );
+  const [isAuth, checkAuth, userData] = useUserStore((state: any) => [
+    state.isAuth,
+    state.checkAuth,
+    state.userData,
+  ]);
 
   useEffect(() => {
     if (localStorage.getItem("token")) {

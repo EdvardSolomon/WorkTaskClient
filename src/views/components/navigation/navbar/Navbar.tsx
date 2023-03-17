@@ -1,6 +1,7 @@
 import { Button, Nav, Navbar } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useUserStore } from "../../../../data/stores/useUserStore";
+import Search from "../search/Search";
 
 const NavDashboard = (props: { name: string; isLoggedIn: boolean }) => {
   const history = useNavigate();
@@ -21,10 +22,11 @@ const NavDashboard = (props: { name: string; isLoggedIn: boolean }) => {
       <Navbar.Brand
         as={Link}
         to="/"
-        style={{ marginLeft: "60px", marginRight: "auto" }}
+        style={{ marginLeft: "60px", marginRight: "10px" }}
       >
         VrealSoft test task
       </Navbar.Brand>
+      <Search />
       <Nav style={{ marginRight: "60px" }}>
         {props.isLoggedIn ? (
           <>

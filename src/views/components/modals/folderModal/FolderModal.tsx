@@ -1,11 +1,11 @@
-import { faPenToSquare, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faEllipsisVertical, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useUserStore } from "../../../../data/stores/useUserStore";
 
-const EditFolder = ({ currentFolderId, parentFolderId }) => {
+const FolderModal = ({ currentFolderId, parentFolderId }) => {
   const [showModal, setShowModal] = useState(false);
   const [folderName, setFolderName] = useState("");
 
@@ -62,6 +62,20 @@ const EditFolder = ({ currentFolderId, parentFolderId }) => {
               <Button type="submit" className="form-control" variant="primary">
                 Edit Folder
               </Button>
+              <Button
+                type="button"
+                className="form-control mt-1"
+                variant="success"
+              >
+                Share
+              </Button>
+              <Button
+                type="button"
+                className="form-control mt-1"
+                variant="danger"
+              >
+                Delete Folder
+              </Button>
             </Form.Group>
           </Form>
         </Modal.Body>
@@ -69,13 +83,12 @@ const EditFolder = ({ currentFolderId, parentFolderId }) => {
       <Button
         onClick={() => setShowModal(true)}
         variant="outline-dark"
-        className="border-1 d-flex align-items-center justify-content-between rounded-2"
+        className="d-flex align-self-end display-relative position-absolute"
       >
-        <FontAwesomeIcon icon={faPenToSquare} />
-        &nbsp; Edit Folder
+        <FontAwesomeIcon icon={faEllipsisVertical} />
       </Button>
     </>
   );
 };
 
-export default EditFolder;
+export default FolderModal;
