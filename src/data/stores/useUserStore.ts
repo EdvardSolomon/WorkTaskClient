@@ -127,6 +127,9 @@ export const useUserStore = create<UserState>()(
         set({ isLoading: true });
         const googleResponse = await AuthService.googleLogin();
         localStorage.setItem("token", googleResponse.data.token);
+        console.log("googleResponse");
+        console.log(googleResponse);
+        console.log(googleResponse.data);
         set({ userData: googleResponse.data.user });
 
         const response = await FolderService.getFoldersByUser(

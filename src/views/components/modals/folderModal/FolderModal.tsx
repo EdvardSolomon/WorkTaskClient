@@ -4,15 +4,29 @@ import { useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useUserStore } from "../../../../data/stores/useUserStore";
+import ShareModal from "../shareModal/shareModal";
 
 const FolderModal = ({ currentFolderId, parentFolderId }) => {
   const [showModal, setShowModal] = useState(false);
   const [folderName, setFolderName] = useState("");
 
-  const [userFolders, updateFolder]: any = useUserStore((state) => [
+  const [userFolders, updateFolder, deleteFolder]: any = useUserStore((state) => [
     state.userFolders,
     state.updateFolder,
+    state.deleteFolder,
   ]);
+
+  const deleteFunk = async (
+    e: React.MouseEvent<SVGSVGElement, MouseEvent>,
+    folderId: number
+  ) => {
+    e.stopPropagation();
+    const result = confirm("Хотите удалить папку?");
+    if (result) {
+      await deleteFolder(folderId);
+    }
+  };
+
 
   const handleFolderSubmit = (e) => {
     e.preventDefault();
@@ -62,17 +76,12 @@ const FolderModal = ({ currentFolderId, parentFolderId }) => {
               <Button type="submit" className="form-control" variant="primary">
                 Edit Folder
               </Button>
-              <Button
-                type="button"
-                className="form-control mt-1"
-                variant="success"
-              >
-                Share
-              </Button>
+              <ShareModal currentFolderId={currentFolderId} parentFolderId={parentFolderId} />
               <Button
                 type="button"
                 className="form-control mt-1"
                 variant="danger"
+                onClick={(e) => deleteFunk(e, currentFolderId)}
               >
                 Delete Folder
               </Button>

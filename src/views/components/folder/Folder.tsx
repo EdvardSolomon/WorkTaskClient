@@ -1,4 +1,4 @@
-import { faFolder, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faFolder } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
@@ -10,16 +10,6 @@ const Folder = ({ folderName, id, folderId }) => {
 
   const deleteFolder = useUserStore((state: any) => state.deleteFolder);
 
-  const deleteFunk = async (
-    e: React.MouseEvent<SVGSVGElement, MouseEvent>,
-    folderId: number
-  ) => {
-    e.stopPropagation();
-    const result = confirm("Хотите удалить папку?");
-    if (result) {
-      await deleteFolder(folderId);
-    }
-  };
 
   return (
     <Col
