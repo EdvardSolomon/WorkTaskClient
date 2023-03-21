@@ -14,6 +14,11 @@ const HomePage = () => {
     (folder: FolderData) => folder.folderName == "Root"
   );
 
+  
+  const rootFolderChilds = userFolders.filter(
+    (folder: FolderData) => folder.parentId == rootFolder.id
+  );
+
   if (isLoading) {
     return (
       <>
@@ -28,8 +33,8 @@ const HomePage = () => {
 
   return (
     <Container fluid className="px-0" style={{ overflowX: "hidden" }}>
-      <SubNav currentFolder={rootFolder} />
-      <Folders rootFolder={rootFolder} />
+      <SubNav currentFolder={rootFolder} role={"owner"}/>
+      <Folders rootFolderId={rootFolder?.id} children={rootFolderChilds} />
       <Files rootFolder={rootFolder} />
     </Container>
   );

@@ -31,4 +31,8 @@ export default class FolderService {
       view: view,
     });
   }
-}
+
+  static getFolderById(folderId: number) {
+    return $api.get(`/folders/${folderId}`);
+  }
+};

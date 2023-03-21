@@ -1,8 +1,9 @@
 import { Breadcrumb } from "react-bootstrap";
 import { useUserStore } from "../../../../data/stores/useUserStore";
 
-const BreadCrum = (folder) => {
-  const currentFolder = folder.currentFolder;
+const BreadCrum = ({folder, role}) => {
+  console.log(folder);
+  const currentFolder = folder;
 
   const userFolders = useUserStore((state) => state.userFolders);
 
@@ -22,9 +23,14 @@ const BreadCrum = (folder) => {
       currentFolder.folderName !== "Root" &&
       filteredFolders?.length > 0 ? (
         <>
-          <Breadcrumb.Item href={"/"} className="text-decoration-none">
-            Root
+        {role == "owner" ?<Breadcrumb.Item href={"/"} className="text-decoration-none">
+          Root
           </Breadcrumb.Item>
+          :<Breadcrumb.Item href={"/shared-with-me"} className="text-decoration-none">
+          Aviable to me
+          </Breadcrumb.Item>
+          }
+          
           {filteredFolders.map((folder) => (
             <Breadcrumb.Item key={folder.id} href={`/folder/${folder.id}`}>
               {folder.folderName}
@@ -41,7 +47,7 @@ const BreadCrum = (folder) => {
               className: "text-primary",
             }}
           >
-            Root
+         Root
           </Breadcrumb.Item>
           <Breadcrumb.Item active>{currentFolder.folderName}</Breadcrumb.Item>
         </>

@@ -8,6 +8,8 @@ import { Container } from "react-bootstrap";
 import NavDashboard from "./views/components/navigation/navbar/Navbar";
 import FolderComponent from "./views/pages/folderPage/FolderComponent";
 import { ToastContainer } from "react-toastify";
+import PermissionRoute from "./views/components/protectedRoutes/PermissionRoute";
+import AviableToMePage from "./views/pages/aviableToMePage/AviableToMePage";
 
 function App() {
   const history = useNavigate();
@@ -36,10 +38,12 @@ function App() {
       />
       <Routes>
         <Route path={`${url}`} element={<HomePage />} />
-        <Route path={`${url}/folder/:folderId`} element={<FolderComponent />} />
+        <Route element={<PermissionRoute />}>
+          <Route path={`${url}/folder/:folderId`} element={<FolderComponent />} />
+        </Route>
+        <Route path={`${url}/shared-with-me`} element={<AviableToMePage/>}/>
       </Routes>
     </Container>
   );
 }
-
 export default App;

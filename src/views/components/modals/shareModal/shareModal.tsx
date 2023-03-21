@@ -1,4 +1,4 @@
-import { faEllipsisVertical, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { Button, Col, Container, Form, ListGroup, Modal, Row, Stack } from "react-bootstrap";

@@ -1,27 +1,20 @@
 import { Col, Row } from "react-bootstrap";
-import { FolderData } from "../../../data/models/state/FolderData";
-import { useUserStore } from "../../../data/stores/useUserStore";
 import Folder from "./Folder";
 
-const Folders = ({ rootFolder }) => {
-  const userFolders = useUserStore((state: any) => state.userFolders);
-
-  const rootFolderChilds = userFolders.filter(
-    (folder: FolderData) => folder.parentId == rootFolder?.id
-  );
+const Folders = ({ rootFolderId, children }) => {
 
   return (
     <>
-      {rootFolderChilds && rootFolderChilds.length > 0 ? (
+      {children && children.length > 0 ? (
         <>
           <p className="text-center border-bottom py-2">Folders</p>
           <Row style={{ height: "auto" }} className="pt-2 gap-2 pb-4 px-5">
-            {rootFolderChilds.map(
+            {children.map(
               ({ folderName, id }: { folderName: string; id: string }) => (
                 <Folder
                   folderName={folderName}
                   id={id}
-                  folderId={rootFolder?.id}
+                  folderId={rootFolderId}
                   key={id}
                 />
               )
@@ -40,5 +33,4 @@ const Folders = ({ rootFolder }) => {
     </>
   );
 };
-
 export default Folders;

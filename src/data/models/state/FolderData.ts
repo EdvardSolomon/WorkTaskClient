@@ -1,3 +1,5 @@
+import { UserData } from "./UserData";
+
 export interface FolderData {
   id: number;
   createdAt: string;
@@ -7,4 +9,6 @@ export interface FolderData {
   view: string;
   userId: number;
   parentId: number;
+  user?: UserData;
+  userPermission: { role: string};
 }

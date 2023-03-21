@@ -10,8 +10,12 @@ import FolderService from "../services/FolderService";
 export const useUserStore = create<UserState>()(
   devtools((set, get) => ({
     userData: null,
+    currentFolder : null,
+    permissions: [],
+
     isAuth: false,
     isLoading: false,
+
     userFiles: [],
     userFolders: [],
 
@@ -80,6 +84,16 @@ export const useUserStore = create<UserState>()(
       set({
         userFolders: [...filteredFolders, updatedFolder],
       });
+    },
+
+    fetchFolder: async (folderId: number) =>{
+      set({ isLoading: true });
+      const response = await FolderService.getFolderById(folderId);
+
+      set({permissions : response.data.permission});
+      delete response.data.permission;
+      console.log(response.data);
+      set({currentFolder : response.data, isLoading: false});
     },
 
     // File methods
