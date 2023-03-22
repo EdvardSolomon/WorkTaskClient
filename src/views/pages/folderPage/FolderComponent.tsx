@@ -5,9 +5,10 @@ import Folders from "../../components/folder/Folders.js";
 import SubNav from "../../components/navigation/subNav/SubNav";
 
 const FolderComponent = () => {
-  const [isLoading, currentFolder,]: any = useUserStore((state) => [
+  const [isLoading, currentFolder, role]: any = useUserStore((state) => [
     state.isLoading,
     state.currentFolder,
+    state.currentFolder?.userPermission.role,
   ]);
 
   if (isLoading) {
@@ -23,9 +24,12 @@ const FolderComponent = () => {
   }
   return (
     <Container fluid className="px-0" style={{ overflowX: "hidden" }}>
-      <SubNav currentFolder={currentFolder} role={"owner"}/>
-      <Folders rootFolderId={currentFolder?.id} children={currentFolder.children} />
-      <Files rootFolder={currentFolder} />
+      <SubNav currentFolder={currentFolder} role={role} />
+      <Folders
+        rootFolderId={currentFolder?.id}
+        children={currentFolder.children}
+      />
+      <Files rootFolderId={currentFolder?.id} children={currentFolder.files} />
     </Container>
   );
 };

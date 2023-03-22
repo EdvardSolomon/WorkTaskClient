@@ -1,8 +1,7 @@
 import { Breadcrumb } from "react-bootstrap";
 import { useUserStore } from "../../../../data/stores/useUserStore";
 
-const BreadCrum = ({folder, role}) => {
-  console.log(folder);
+const BreadCrum = ({ folder, role }) => {
   const currentFolder = folder;
 
   const userFolders = useUserStore((state) => state.userFolders);
@@ -23,14 +22,19 @@ const BreadCrum = ({folder, role}) => {
       currentFolder.folderName !== "Root" &&
       filteredFolders?.length > 0 ? (
         <>
-        {role == "owner" ?<Breadcrumb.Item href={"/"} className="text-decoration-none">
-          Root
-          </Breadcrumb.Item>
-          :<Breadcrumb.Item href={"/shared-with-me"} className="text-decoration-none">
-          Aviable to me
-          </Breadcrumb.Item>
-          }
-          
+          {role == "owner" ? (
+            <Breadcrumb.Item href={"/"} className="text-decoration-none">
+              Root
+            </Breadcrumb.Item>
+          ) : (
+            <Breadcrumb.Item
+              href={"/shared-with-me"}
+              className="text-decoration-none"
+            >
+              Aviable to me
+            </Breadcrumb.Item>
+          )}
+
           {filteredFolders.map((folder) => (
             <Breadcrumb.Item key={folder.id} href={`/folder/${folder.id}`}>
               {folder.folderName}
@@ -40,15 +44,24 @@ const BreadCrum = ({folder, role}) => {
         </>
       ) : (
         <>
-          <Breadcrumb.Item
-            href={"/"}
-            linkProps={{
-              variant: "white",
-              className: "text-primary",
-            }}
-          >
-         Root
-          </Breadcrumb.Item>
+          {role == "owner" ? (
+            <Breadcrumb.Item
+              href={"/"}
+              linkProps={{
+                variant: "white",
+                className: "text-primary",
+              }}
+            >
+              Root
+            </Breadcrumb.Item>
+          ) : (
+            <Breadcrumb.Item
+              href={"/shared-with-me"}
+              className="text-decoration-none"
+            >
+              Aviable to me
+            </Breadcrumb.Item>
+          )}
           <Breadcrumb.Item active>{currentFolder.folderName}</Breadcrumb.Item>
         </>
       )}

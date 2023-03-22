@@ -3,9 +3,8 @@ import CreateFolder from "../../modals/createFolder/CreateFolder";
 import UploadFile from "../../modals/uploadFile/UploadFile";
 import BreadCrum from "./Breadcrumps";
 
-const SubNav = ({currentFolder, role}) => {
- // const currentFolder = currentFolder.currentFolder;
-console.log(role);
+const SubNav = ({ currentFolder, role }) => {
+  console.log(role);
   if (!currentFolder) {
     return (
       <>
@@ -21,14 +20,16 @@ console.log(role);
     );
   }
 
-  if(role === 'owner'){
+  if (role === "owner") {
     return (
       <Col
         md={12}
-        className={"d-flex align-items-center px-5 pt-3 justify-content-between"}
+        className={
+          "d-flex align-items-center px-5 pt-3 justify-content-between"
+        }
       >
         {currentFolder && currentFolder.folderName !== "Root" ? (
-          <BreadCrum folder={currentFolder} role={role}/>
+          <BreadCrum folder={currentFolder} role={role} />
         ) : (
           <p>Root</p>
         )}
@@ -41,31 +42,36 @@ console.log(role);
     );
   }
 
-  if(role === 'writer'){
+  if (role === "writer") {
     return (
       <Col
-      md={12}
-      className={"d-flex align-items-center px-5 pt-3 justify-content-between"}>
-        <BreadCrum currentFolder={currentFolder} role={"notOwner"}/>
+        md={12}
+        className={
+          "d-flex align-items-center px-5 pt-3 justify-content-between"
+        }
+      >
+        <BreadCrum folder={currentFolder} role={"writer"} />
         <div className="ml-auto col-md-5 d-flex justify-content-end">
-        <UploadFile currentFolder={currentFolder} />
-        &nbsp;
-        <CreateFolder currentFolder={currentFolder} />
+          <UploadFile currentFolder={currentFolder} />
+          &nbsp;
+          <CreateFolder currentFolder={currentFolder} />
         </div>
-    </Col>)
+      </Col>
+    );
   }
 
-
-  if(role === 'reader'){
+  if (role === "reader") {
     return (
-    <Col
-    md={12}
-    className={"d-flex align-items-center px-5 pt-3 justify-content-between"}>
-              <BreadCrum currentFolder={currentFolder} role={"notOwner"}/>
-    </Col>)
+      <Col
+        md={12}
+        className={
+          "d-flex align-items-center px-5 pt-3 justify-content-between"
+        }
+      >
+        <BreadCrum folder={currentFolder} role={"reader"} />
+      </Col>
+    );
   }
-
-
 };
 
 export default SubNav;

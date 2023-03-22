@@ -10,21 +10,9 @@ const Folder = ({ folderName, id, folderId }) => {
 
   const deleteFolder = useUserStore((state: any) => state.deleteFolder);
 
-
   return (
     <Col
       onDoubleClick={() => history(`/folder/${id}`)}
-      onClick={(e) => {
-        if (e.currentTarget.classList.contains("text-white")) {
-          e.currentTarget.style.background = "#fff";
-          e.currentTarget.classList.remove("text-white");
-          e.currentTarget.classList.remove("shadow-sm");
-        } else {
-          e.currentTarget.style.background = "#017bf562";
-          e.currentTarget.classList.add("text-white");
-          e.currentTarget.classList.add("shadow-sm");
-        }
-      }}
       key={id}
       md={2}
       className="border h-100 d-flex align-items-center flex-column py-1 rounded-2 position-relative"
